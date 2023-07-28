@@ -1,41 +1,26 @@
 pipeline {
     agent any
-	tools {
-      maven 'MVN_HOME'
-    }
-    environment {
-      DOCKER_TAG = getVersion()
-    }
-    stages {
-        stage('SCM') {
-            steps {
-                git credentialsId: 'github', 
-                    url: 'https://github.com/NAciriAbdelilah/LabJenkinsDevops.git',
-                    branch: 'main'
-            }
-        }
 
-        stage('Maven Build') {
+    stages {
+    
+        stage('Build') {
             steps {
                 sh "mvn clean package"
             }
-        }
-
-        stage('Docker Build'){
-            steps{
-                sh "docker build . -t naciriapp:${DOCKER_TAG} "
+            post{
+                success{
+                    echo "Archiving the Artifacts"
+                    archiveArtifacts artifacts: '**/target/*.war'
+                }
             }
         }
-        stage('Docker Run'){
+
+        stage('Deploy to Tomcat server'){
             steps{
-                echo 'Run Docker from the source code'
+                deploy adapters: [tomcat9(credentialsId: 'jenkinsDeployer', path: '', url: 'http://localhost:9080/')], contextPath: null, war: '**/*.war'
             }
         }
 
     }
 
-}
-def getVersion(){
-    def commitHash = sh label: '', returnStdout: true, script: 'git rev-parse --short HEAD'
-    return commitHash
 }
