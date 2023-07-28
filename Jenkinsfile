@@ -10,7 +10,8 @@ pipeline {
         stage('SCM') {
             steps {
                 git credentialsId: 'github', 
-                    url: 'https://github.com/NAciriAbdelilah/LabJenkinsDevops'
+                    url: 'https://github.com/NAciriAbdelilah/LabJenkinsDevops.git',
+                    branch: 'main'
             }
         }
 
@@ -25,12 +26,12 @@ pipeline {
                 sh "docker build . -t naciriapp:${DOCKER_TAG} "
             }
         }
-
-        stage('Docker Run') {
-            steps {
-                sh "docker run -d -p 8081:8080 naciriTestingLab:${env.BUILD_NUMBER}"
+        stage('Docker Run'){
+            steps{
+                echo 'Run Docker from the source code'
             }
         }
+
     }
 
 }
