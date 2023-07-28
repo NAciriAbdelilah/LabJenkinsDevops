@@ -8,7 +8,7 @@ pipeline {
     
         stage('Build') {
             steps {
-                sh "mvn clean package"
+                bat "mvn clean package"
             }
             post{
                 success{
@@ -21,11 +21,6 @@ pipeline {
         stage('Deploy to Tomcat server'){
             steps{
                 deploy adapters: [tomcat9(credentialsId: 'jenkinsDeployer', path: '', url: 'http://localhost:9080/')], contextPath: null, war: '**/*.war'
-            }
-        }
-        stage('Docker Run'){
-            steps{
-                echo 'Run Docker from the source code'
             }
         }
 
