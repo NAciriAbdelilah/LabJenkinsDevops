@@ -4,6 +4,18 @@ pipeline {
       maven 'MVN_HOME'
     }
     stages {
+        
+        stage('Git Clone') {
+            steps {
+                // The 'checkout' step will automatically clone the Git repository
+                // Replace 'https://github.com/NAciriAbdelilah/LabJenkinsDevops.git' with the URL of your Git repository
+                checkout([$class: 'GitSCM', 
+                          branches: [[name: '*/main']], 
+                          userRemoteConfigs: [[url: 'https://github.com/NAciriAbdelilah/LabJenkinsDevops.git']]])
+            }
+        }
+
+        }
         stage('Build') {
             steps {
                 bat "mvn clean package"
