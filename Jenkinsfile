@@ -3,9 +3,7 @@ pipeline {
 	tools {
       maven 'MVN_HOME'
     }
-
     stages {
-    
         stage('Build') {
             steps {
                 bat "mvn clean package"
@@ -17,7 +15,6 @@ pipeline {
                 }
             }
         }
-
         stage('Deploy to Tomcat server'){
             steps{
                 deploy adapters: [tomcat9(credentialsId: 'jenkinsDeployer', path: '', url: 'http://localhost:9080/')], contextPath: null, war: '**/*.war'
@@ -25,12 +22,11 @@ pipeline {
         }
         stage('Docker Run') {
             steps {
-                echo 'Build Docker image from the source code'
+                echo 'Build Docker image jenkins/jenkins from the source code'
+                bat 'docker build -t jenkins/jenkins .'
                 echo 'Run Docker container from the Docker image jenkins/jenkins'
                 bat 'docker run -d -p 8086:8080 -p 50000:50000 --name=JenkinsInsideContainer --restart=on-failure jenkins/jenkins:lts-jdk11'
             }
         }
-
     }
-
 }
