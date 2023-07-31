@@ -4,7 +4,7 @@ pipeline {
       maven 'MVN_HOME'
     }
     stages {
-        
+
         stage('Git Clone') {
             steps {
                 // The 'checkout' step will automatically clone the Git repository
@@ -15,7 +15,6 @@ pipeline {
             }
         }
 
-        }
         stage('Build') {
             steps {
                 bat "mvn clean package"
@@ -37,7 +36,7 @@ pipeline {
                 echo 'Build Docker image jenkins/jenkins from the source code'
                 bat 'docker build -t jenkins/jenkins .'
                 echo 'Run Docker container from the Docker image jenkins/jenkins'
-                bat 'docker run -d -p 8086:8080 -p 50000:50000 --name=JenkinsInsideContainer --restart=on-failure jenkins/jenkins:lts-jdk11'
+                bat 'docker run -d -p 8081:8080 -p 50000:50000 --name=JenkinsInsideContainer --restart=on-failure jenkins/jenkins:lts-jdk11'
             }
         }
     }
